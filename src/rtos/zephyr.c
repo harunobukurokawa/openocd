@@ -349,6 +349,14 @@ static struct zephyr_params zephyr_params_list[] = {
 		.get_cpu_state = &zephyr_get_arm_state,
 	},
 	{
+		.target_name = "armv8r-aarch32",
+		.pointer_width = 4,
+		.callee_saved_stacking = &arm_callee_saved_stacking,
+		.cpu_saved_nofp_stacking = &arm_cpu_saved_nofp_stacking,
+		.cpu_saved_fp_stacking = &arm_cpu_saved_fp_stacking,
+		.get_cpu_state = &zephyr_get_arm_state,
+	},
+	{
 		.target_name = "hla_target",
 		.pointer_width = 4,
 		.callee_saved_stacking = &arm_callee_saved_stacking,
@@ -441,6 +449,11 @@ static int zephyr_create(struct target *target)
 			arc_cpu_saved_stacking.stack_registers_size = 12;
 		}
 	}
+
+	/* ARMv8-R AArch32 profile */
+	if (!strcmp(name, "armv8r") &&
+	    !strcmp(target_get_gdb_arch(target), "arm"))
+		name = "armv8r-aarch32";
 
 	for (struct zephyr_params *p = zephyr_params_list; p->target_name; p++) {
 		if (!strcmp(p->target_name, name)) {
