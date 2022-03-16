@@ -96,7 +96,9 @@ static int aarch64_restore_system_control_reg(struct target *target)
 		case ARMV8_64_EL3T:
 			instr = ARMV8_MSR_GP(SYSTEM_SCTLR_EL3, 0);
 			break;
-
+		case ARM_MODE_USR:
+			target_mode = ARM_MODE_SYS;
+			/* fall through */
 		case ARM_MODE_SVC:
 		case ARM_MODE_ABT:
 		case ARM_MODE_FIQ:
@@ -104,6 +106,7 @@ static int aarch64_restore_system_control_reg(struct target *target)
 		case ARM_MODE_HYP:
 		case ARM_MODE_UND:
 		case ARM_MODE_SYS:
+
 			instr = ARMV4_5_MCR(15, 0, 0, 1, 0, 0);
 			break;
 
@@ -175,7 +178,9 @@ static int aarch64_mmu_modify(struct target *target, int enable)
 	case ARMV8_64_EL3T:
 		instr = ARMV8_MSR_GP(SYSTEM_SCTLR_EL3, 0);
 		break;
-
+	case ARM_MODE_USR:
+		target_mode = ARM_MODE_SYS;
+		/* fall through */
 	case ARM_MODE_SVC:
 	case ARM_MODE_ABT:
 	case ARM_MODE_FIQ:
@@ -1044,7 +1049,9 @@ static int aarch64_post_debug_entry(struct target *target)
 	case ARMV8_64_EL3T:
 		instr = ARMV8_MRS(SYSTEM_SCTLR_EL3, 0);
 		break;
-
+	case ARM_MODE_USR:
+		target_mode = ARM_MODE_SYS;
+		/* fall through */
 	case ARM_MODE_SVC:
 	case ARM_MODE_ABT:
 	case ARM_MODE_FIQ:
